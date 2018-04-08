@@ -1,0 +1,87 @@
+<h:outputLabel value="Imie"/>
+<h:inputText value="#{surveyController.survey.person.name}"
+             required="true"/>
+
+<br/>
+<h:outputLabel value="Email"/>
+<h:inputText id="email"
+             value="#{surveyController.survey.person.email}"
+             validatorMessage="Niepoprawny format adresu email">
+<f:validateRegex
+        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+</h:inputText>
+<h:message for="email" style="color:red"  />
+
+<br/>
+
+<h:outputLabel value="Wiek"/>
+<h:inputText id="age"
+             value="#{surveyController.survey.person.age}"
+             validatorMessage="Wiek musi byc w przedziale od 10 do 100">
+<f:validateLongRange minimum="10" maximum="100" />
+</h:inputText>
+<h:message for="age" style="color:red"/>
+
+<br></br>
+<h:outputLabel value="Plec"/>
+<h:selectOneRadio id="sex" value="#{surveyController.survey.person.sex}">
+<f:selectItem itemValue="Woman" itemLabel="Woman" />
+<f:selectItem itemValue="Man" itemLabel="Man" />
+<f:ajax event="change" execute="@this" render="info"/>
+</h:selectOneRadio>
+
+<h:outputLabel value="Wyksztalcenie"/>
+<h:inputText value="#{surveyController.survey.person.education}"/>
+
+<h:panelGrid id="info">
+<h:outputLabel value="Wzrost"/>
+<h:inputText id="womansHeight"
+             rendered="#{surveyController.survey.person.sex eq 'Woman'}"
+             value="#{surveyController.survey.person.height}"
+             validatorMessage="Wzrost musi byc w przedziale od 150 do 185">
+    <f:validateLongRange minimum="150" maximum="185" />
+</h:inputText>
+<h:message for="womansHeight" style="color:red"/>
+<h:inputText id="mansHeight"
+             rendered="#{surveyController.survey.person.sex eq 'Man'}"
+             value="#{surveyController.survey.person.height}"
+             validatorMessage="Wzrost musi byc w przedziale od 165 do 200">
+    <f:validateLongRange minimum="150" maximum="185" />
+</h:inputText>
+<h:message for="mansHeight" style="color:red"/>
+
+<h:outputLabel value="Obwod biustu"
+               rendered="#{surveyController.survey.person.sex == 'Woman'}"/>
+<h:inputText value="#{surveyController.survey.bustSize}"
+             rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+
+<h:outputLabel value="Rozmiar miseczki"
+               rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+<h:inputText value="#{surveyController.survey.cupSize}"
+             rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+
+<h:outputLabel value="Talia"
+               rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+<h:outputLabel value="Pas"
+               rendered="#{surveyController.survey.person.sex eq 'Man'}"/>
+<h:inputText value="#{surveyController.survey.waist}"/>
+
+<h:outputLabel value="Biodra"
+               rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+<h:inputText value="#{surveyController.survey.hips}"
+             rendered="#{surveyController.survey.person.sex eq 'Woman'}"/>
+
+<h:outputLabel value="Dlugosc nogi"/>
+<h:inputText value="#{surveyController.survey.legLength}"/>
+
+
+</h:panelGrid>
+
+<br />
+<h:commandButton id="submit" value="Zaakceptuj" action="#{surveyController.setAccepted(true)}"/>
+<h:commandButton value="Reset" type="reset"/>
+<br/>
+
+<ui:fragment rendered="#{surveyController.accepted}">
+<ui:include src="res.xhtml"/>
+</ui:fragment>

@@ -1,3 +1,5 @@
+package zad3;
+
 public class Car {
 
     private final String brand;
@@ -31,7 +33,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
+        return "main.java.zad3.Car{" +
                 "brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", engine='" + engine + '\'' +

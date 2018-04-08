@@ -8,61 +8,148 @@
 
 <h:head></h:head>
 <f:view>
-   <h:body>
-      <h:form>
-         <h:panelGroup>
-            <h:outputLabel value="Brand     "/>
-               <h:selectOneMenu
-                    value="#{carHandler.brand}"
-                    onchange="submit()"
-                    valueChangeListener="#{carHandler.updateModels}">
-               <f:selectItems value="#{carHandler.carsMap.keySet()}"/>
-            </h:selectOneMenu>
-         </h:panelGroup>
+    <h:body>
+        <h:form>
+            <h:outputLabel value="Imie"/>
+            <h:inputText value="#{survey.person.name}"
+                         required="true"/>
 
-         <h:panelGroup><br />
-            <h:outputLabel value="Model     "/>
-            <h:selectOneMenu>
-               <f:selectItems value="#{carHandler.models}"/>
-            </h:selectOneMenu>
-         </h:panelGroup>
-
-
-         <h:panelGroup><br />
-            <h:outputLabel value="Engine    "/>
-            <h:selectOneMenu>
-               <f:selectItems value="#{carHandler.engineTypes}"/>
-            </h:selectOneMenu>
-         </h:panelGroup>
-
-         <h:panelGroup><br />
-             <h:outputLabel value="Price rane    "/>
-            <h:inputText id="priceRange" value="#{carHandler.price}">
-             <f:validateRegex pattern="\d+-\d+" />
+            <br/>
+            <h:outputLabel value="Email"/>
+            <h:inputText id="email"
+                         value="#{survey.person.email}"
+                         validatorMessage="Niepoprawny format adresu email">
+                <f:validateRegex
+                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
             </h:inputText>
-             <h:message for="priceRange" style="color:red" />
-         </h:panelGroup>
+            <h:message for="email" style="color:red"  />
+            <br/>
 
-         <h:panelGroup><br />
-            <h:outputLabel value="Name  "/>
-            <h:inputText value="#{carHandler.clientName}" id="clientName">
-               <f:ajax event="change" render="submit"/>
+            <h:outputLabel value="Wiek"/>
+            <h:inputText id="age"
+                         value="#{survey.person.age}"
+                         validatorMessage="Wiek musi byc w przedziale od 10 do 100">
+                <f:validateLongRange minimum="10" maximum="100" />
             </h:inputText>
-         </h:panelGroup>
+            <h:message for="age" style="color:red"/>
 
-         <h:panelGroup><br />
-             <h:outputLabel value="Telephone number     "/>
-            <h:inputText value="#{carHandler.telephoneNumber}" id="telephoneNumber">
-               <f:ajax event="change" render="submit"/>
-            </h:inputText>
-         </h:panelGroup>
+            <br></br>
+            <h:outputLabel value="Plec"/>
+            <h:selectOneRadio id="sex" value="#{survey.person.sex}">
+                <f:selectItems value="#{listsUtil.sex}"/>
+                <f:ajax event="change" execute="@this" render="info addInfo"/>
+            </h:selectOneRadio>
 
-         <h:panelGroup><br />
-            <h:commandButton id="submit" action="result" value="Submit" disabled="#{empty carHandler.clientName or empty carHandler.telephoneNumber}"/>
-            <h:commandButton value="Reset" type="reset"/>
-         </h:panelGroup>
+            <h:outputLabel value="Wyksztalcenie"/>
+            <h:inputText value="#{survey.person.education}"/>
 
-      </h:form>
-   </h:body>
+            <h:panelGrid id="info">
+                <h:outputLabel value="Wzrost"/>
+                <h:inputText id="womansHeight"
+                             rendered="#{survey.person.sex eq 'Woman'}"
+                             value="#{survey.person.height}"
+                             validatorMessage="Wzrost musi byc w przedziale od 150 do 185">
+                    <f:validateLongRange minimum="150" maximum="185" />
+                </h:inputText>
+                <h:message for="womansHeight" style="color:red"/>
+
+                <h:inputText id="mansHeight"
+                             rendered="#{survey.person.sex eq 'Man'}"
+                             value="#{survey.person.height}"
+                             validatorMessage="Wzrost musi byc w przedziale od 165 do 200">
+                    <f:validateLongRange minimum="165" maximum="200" />
+                </h:inputText>
+                <h:message for="mansHeight" style="color:red"/>
+
+                <h:panelGrid rendered="#{survey.person.sex == 'Woman'}">
+                    <h:outputLabel value="Obwod biustu"/>
+                    <h:inputText value="#{survey.bustSize}"/>
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{survey.person.sex eq 'Woman'}">
+                    <h:outputLabel value="Rozmiar miseczki"/>
+                    <h:inputText value="#{survey.cupSize}"/>
+                 </h:panelGrid>
+
+                <h:outputLabel value="${listsUtil.waist(survey.person.sex)}"/>
+                <h:inputText value="#{survey.waist}"/>
+
+                <h:panelGrid rendered="#{survey.person.sex eq 'Woman'}">
+                    <h:outputLabel value="Biodra"/>
+                     <h:inputText value="#{survey.hips}"/>
+                </h:panelGrid>
+
+                <h:outputLabel value="Dlugosc nogi"/>
+                <h:inputText value="#{survey.legLength}"/>
+
+
+            </h:panelGrid>
+
+           <br/>
+            <h:outputLink value="http://google.pl">"GOOGLE AD"
+                <f:ajax event="click" listener="#{survey.incrementCounter()}"/>
+            </h:outputLink>
+                <h:commandButton id="submit"
+                                 value="Zaakceptuj"
+                                 action="#{survey.setAccepted(true)}"
+                                 rendered="#{not survey.accepted}"/>
+           <br/>
+
+
+            <h:panelGrid id="addInfo" rendered="#{survey.accepted}">
+                <h:outputLabel value="Kwota"/>
+                <h:selectOneRadio value="#{survey.info.moneyAmount}">
+                    <f:selectItems value="#{listsUtil.money}"/>
+                </h:selectOneRadio>
+
+
+                <h:outputLabel value="Czestotliwosc zakupow"/>
+                <h:selectOneRadio value="#{survey.info.frequency}">
+                    <f:selectItems value="#{listsUtil.frequency}"/>
+                </h:selectOneRadio>
+
+
+                <h:outputLabel value="Kolor ubran"/>
+                <h:selectManyCheckbox value="#{survey.info.color}">
+                    <f:selectItems value="#{listsUtil.colors}"/>
+                </h:selectManyCheckbox>
+
+
+                <h:outputLabel value="Rodzaj ubran"/>
+                <h:selectManyCheckbox value="#{survey.info.clothesKind}">
+                    <f:selectItems value="#{listsUtil.getKinds(survey.person.sex)}"/>
+                </h:selectManyCheckbox>
+
+
+                <h:outputLabel value="Kiedy ostatnio ${listsUtil.did(survey.person.sex)} u nas zakupy?" />
+                <h:selectOneRadio value="#{survey.info.lastShopping}">
+                    <f:selectItems value="#{listsUtil.date}"/>
+                </h:selectOneRadio>
+
+
+
+                <h:outputLabel value="Czy jestes ${listsUtil.satisfied(survey.person.sex)} z zakupow?"/>
+                <h:selectOneRadio value="#{survey.info.shoppingSatisfaction}">
+                    <f:selectItems value="#{listsUtil.satisfaction}"/>
+                </h:selectOneRadio>
+
+
+                <h:outputLabel value="Czy jestes ${listsUtil.satisfied(survey.person.sex)} z naszych pracownikow?"/>
+                <h:selectOneRadio value="#{survey.info.staffSatisfaction}">
+                    <f:selectItems value="#{listsUtil.satisfaction}"/>
+                </h:selectOneRadio>
+
+
+                <h:outputLabel value="Wpisz swoje uwagi"/>
+                <h:inputTextarea value="#{survey.info.comments}"/>
+
+
+
+            <h:commandButton value="Zakoncz" action="result"/>
+
+            </h:panelGrid>
+
+        </h:form>
+    </h:body>
 </f:view>
 </html>

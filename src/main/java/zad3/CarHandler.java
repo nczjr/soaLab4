@@ -1,3 +1,4 @@
+package zad3;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ValueChangeEvent;
